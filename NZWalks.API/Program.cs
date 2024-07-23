@@ -5,6 +5,7 @@ using NZWalks.API.Mappings;
 using NZWalks.API.Repository;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,14 +16,41 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// SQL Connection
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     );
 
+builder.Services.AddDbContext<AuthenticationDbContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("AuthDefaultConnection"))
+    );
+
+// Dependencie Injection - Repository
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
+
+// Automapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
+// Setting Up Identity
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalks")
+    .AddEntityFrameworkStores<AuthenticationDbContext>()
+    .AddDefaultTokenProviders();
+
+// Password settings configuration
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+});
+
+// Inject Jwt Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => 
     options.TokenValidationParameters = new TokenValidationParameters
@@ -48,7 +76,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Use the authenticaton technique
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
