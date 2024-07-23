@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
+using System.Linq;
 
 namespace NZWalks.API.Repository;
 
@@ -28,11 +29,22 @@ public class SQLWalkRepository : IWalkRepository
         return exitWalk;
     }
 
-    public async Task<List<Walk>> GetAllAsync()
+    public async Task<List<Walk>> GetAllAsync(string? filterOn, string? filterQuery)
     {
-        return await _db.Walks
-            .Include("Difficulty").Include("Region")
-            .ToListAsync();
+        var walks = _db.Walks.Include("Difficulty").Include("Region").AsQueryable();
+        // Filtering
+        if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+        {
+            if(filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+            {
+                walks = walks.Where(x => x.Name.Contains(filterQuery));
+            }
+        }
+
+        return await walks.ToListAsync();
+        //return await _db.Walks
+        //    .Include("Difficulty").Include("Region")
+        //    .ToListAsync();
     }
 
     public async Task<Walk?> GetByIdAsync(Guid id)
