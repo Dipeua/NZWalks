@@ -22,7 +22,7 @@ namespace NZWalks.API.Controllers
             _mapper = mapper;
         }
 
-        // api/walks/filterOn=Name&filterQuery=Track&sortBy=Name&isAscending=true&pageNumber=1&pageSize=2
+        // api/walks?filterOn=Name&filterQuery=Track&sortBy=Name&isAscending=true&pageNumber=1&pageSize=2
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool? isAscending, [FromQuery] int? pageNumber = 1, [FromQuery] int? pageSize = 1000)

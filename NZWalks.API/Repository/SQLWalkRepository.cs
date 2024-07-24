@@ -38,7 +38,7 @@ public class SQLWalkRepository : IWalkRepository
         {
             if(filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
             {
-                walks = walks.Where(x => x.Name.Contains(filterQuery));
+                walks = walks.Where(w => w.Name.Contains(filterQuery));
             }
         }
 
@@ -47,11 +47,11 @@ public class SQLWalkRepository : IWalkRepository
         {
             if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
             {
-                walks = (bool)isAscending ? walks.OrderBy(x => x.Name) : walks.OrderByDescending(x => x.Name);
+                walks = (bool)isAscending ? walks.OrderBy(w => w.Name) : walks.OrderByDescending(w => w.Name);
             }
             else if (sortBy.Equals("LengthInKm", StringComparison.OrdinalIgnoreCase))
             {
-                walks = (bool)isAscending ? walks.OrderBy(x => x.LengthInKm) : walks.OrderByDescending(x => x.LengthInKm);
+                walks = (bool)isAscending ? walks.OrderBy(w => w.LengthInKm) : walks.OrderByDescending(w => w.LengthInKm);
             }
         }
 
