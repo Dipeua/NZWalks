@@ -28,6 +28,7 @@ builder.Services.AddDbContext<AuthenticationDbContext>(
 // Dependencie Injection - Repository
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
+builder.Services.AddScoped<ITokenRepository, GenerateJWTToken>();
 
 // Automapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
