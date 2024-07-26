@@ -31,19 +31,11 @@ namespace NZWalks.API.Controllers
         //[Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                throw new Exception("This is a custome exception");
-                var regionsDomain = await _regionRepository.GetAllAsync();
-                var regionsDto = _mapper.Map<List<RegionDto>>(regionsDomain);
+            var regionsDomain = await _regionRepository.GetAllAsync();
+            var regionsDto = _mapper.Map<List<RegionDto>>(regionsDomain);
 
-                _loggerRegion.LogInformation($"Finnished GetAllRegions request with data: {JsonSerializer.Serialize(regionsDomain)} ");
-                return Ok(regionsDto);
-            }catch(Exception ex)
-            {
-                _loggerRegion.LogError(ex, ex.Message);
-                throw;
-            }
+            _loggerRegion.LogInformation($"Finnished GetAllRegions request with data: {JsonSerializer.Serialize(regionsDomain)} ");
+            return Ok(regionsDto);
         }
 
         [HttpGet]

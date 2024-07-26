@@ -29,6 +29,10 @@ namespace NZWalks.API.Controllers
         {
             var walksDomain = await _walksRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
             var walksDto = _mapper.Map<List<WalkDto>>(walksDomain);
+
+            //// create an exception
+            //throw new Exception("This a new exceptions");
+            
             return Ok(walksDto);
         }
 
@@ -73,10 +77,16 @@ namespace NZWalks.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var walkDomain = await _walksRepository.DeleteAsync(id);
-            if(walkDomain == null) { return NotFound(); }
-            var walkDto = _mapper.Map<WalkDto>(walkDomain);
-            return Ok(walkDto);
+            try
+            {
+                var walkDomain = await _walksRepository.DeleteAsync(id);
+                if (walkDomain == null) { return NotFound(); }
+                var walkDto = _mapper.Map<WalkDto>(walkDomain);
+                return Ok(walkDto);
+            }catch(Exception ex)
+            {
+                return Ok(ex.Message);
+            }
         }
 
     }
