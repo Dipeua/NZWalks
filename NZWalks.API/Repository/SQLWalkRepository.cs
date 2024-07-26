@@ -32,7 +32,10 @@ public class SQLWalkRepository : IWalkRepository
     public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
         string? sortBy = null, bool? isAscending = true, int? pageNumber = 1, int? pageSize = 1000)
     {
-        var walks = _db.Walks.Include("Difficulty").Include("Region").AsQueryable();
+        var walks = _db.Walks
+            .Include("Difficulty").Include("Region")
+            .AsQueryable();
+
         // Filtering
         if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
         {
@@ -57,11 +60,7 @@ public class SQLWalkRepository : IWalkRepository
 
         // Pagination
         var skipResults = (pageNumber - 1) * pageSize;
-
         return await walks.Skip((int)skipResults).Take((int)pageSize).ToListAsync();
-        //return await _db.Walks
-        //    .Include("Difficulty").Include("Region")
-        //    .ToListAsync();
     }
 
     public async Task<Walk?> GetByIdAsync(Guid id)

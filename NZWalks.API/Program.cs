@@ -35,7 +35,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 // Setting Up Identity
 builder.Services.AddIdentityCore<IdentityUser>()
     .AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalks")
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalk")
     .AddEntityFrameworkStores<AuthenticationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -52,7 +52,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 // Inject Jwt Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => 
+    .AddJwtBearer(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,

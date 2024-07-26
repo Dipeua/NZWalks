@@ -15,7 +15,6 @@ namespace NZWalks.API.Controllers
             _userManager = userManager;
         }
 
-
         // /api/Auth/Register
         [HttpPost]
         [Route("Register")]
@@ -31,17 +30,24 @@ namespace NZWalks.API.Controllers
             if (identityResult.Succeeded)
             {
                 // Add roles to this User
-                if(registerRequestDto.Roles != null && registerRequestDto.Roles.Any())
+                if (registerRequestDto.Roles != null && registerRequestDto.Roles.Any())
                 {
-                    identityResult = await _userManager.AddToRoleAsync(identityUser, registerRequestDto.Roles);
-                    if (identityResult.Succeeded)
+                    // interer sur le role
+                    foreach (var role in registerRequestDto.Roles)
                     {
-                        return Ok("User was registered! Please login.");
+                        identityResult = await _userManager.AddToRoleAsync(identityUser, role);
+                        if (!identityResult.Succeeded)
+                        {
+                            return BadRequest("Failed to add role: " + role);
+                        }
                     }
+                    return Ok("User was registered! Please login.");
                 }
+                return Ok("User was registered without roles! Please login.");
             }
-            return BadRequest("Somethings went wrong.");
+            return BadRequest("Something went wrong.");
         }
+
 
         [HttpPost]
         [Route("Login")]
@@ -55,7 +61,7 @@ namespace NZWalks.API.Controllers
                 if (checkPasswordResult)
                 {
                     // Create token
-                    return Ok();
+                    return Ok("Good");
                 }
             }
             return BadRequest("Username or password incorrect");
