@@ -76,6 +76,8 @@ namespace NZWalks.UI.Controllers
         }
 
 
+
+
         // POST
         [HttpPost]
         public async Task<IActionResult> Create(AddRegion addRegion)
@@ -114,7 +116,7 @@ namespace NZWalks.UI.Controllers
                     RequestUri = new Uri($"{_url}/{regionDto.Id}"),
                     Content = new StringContent(JsonSerializer.Serialize(regionDto), Encoding.UTF8, "application/json")
                 };
-             
+
                 var httpResponseMessage = await client.SendAsync(httpRequestMessage);
                 httpResponseMessage.EnsureSuccessStatusCode();
 
@@ -124,7 +126,27 @@ namespace NZWalks.UI.Controllers
                 {
                     return RedirectToAction("Index", "Regions");
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(RegionDto regionDto)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var httpResponseMessage = await client.DeleteAsync($"{_url}/{regionDto.Id}");
+                httpResponseMessage.EnsureSuccessStatusCode();
+                return RedirectToAction("Index", "Regions");
+            }
+            catch (Exception ex)
             {
                 throw;
             }
