@@ -9,20 +9,23 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <td>Id</td>
             <td>Code</td>
             <td>Name</td>
             <td>Image URL</td>
+            <td>Actions</td>
         </tr>
     </thead>
     <tbody>
         @foreach(var region in Model)
         {
             <tr>
-                <td>@region.Id</td>
                 <td>@region.Code</td>
                 <td>@region.Name</td>
                 <td>@region.RegionImageUrl</td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@region.Id">Edit</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@region.Id">Delete</a>
+                </td>
             </tr>
         }
     </tbody>
