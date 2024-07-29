@@ -102,27 +102,34 @@ namespace NZWalks.UI.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(AddRegion addRegion)
-        //{
-        //    var client = _httpClientFactory.CreateClient();
-        //    var httpRequestMessage = new HttpRequestMessage()
-        //    {
-        //        Method = HttpMethod.Put,
-        //        RequestUri = new Uri(_url),
-        //        Content = new StringContent(JsonSerializer.Serialize(addRegion), Encoding.UTF8, "application/json")
-        //    };
-        //    var httpResponseMessage = await client.SendAsync(httpRequestMessage);
-        //    httpResponseMessage.EnsureSuccessStatusCode();
+        [HttpPost]
+        public async Task<IActionResult> Edit(RegionDto regionDto)
+        {
+            var client = _httpClientFactory.CreateClient();
+            try
+            {
+                var httpRequestMessage = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Put,
+                    RequestUri = new Uri($"{_url}/{regionDto.Id}"),
+                    Content = new StringContent(JsonSerializer.Serialize(regionDto), Encoding.UTF8, "application/json")
+                };
+             
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+                httpResponseMessage.EnsureSuccessStatusCode();
 
-        //    var responseBody = await httpRequestMessage.Content.ReadFromJsonAsync<AddRegion>();
+                var responseBody = await httpRequestMessage.Content.ReadFromJsonAsync<RegionDto>();
 
-        //    if (responseBody is not null)
-        //    {
-        //        return RedirectToAction("Index", "Regions");
-        //    }
+                if (responseBody is not null)
+                {
+                    return RedirectToAction("Index", "Regions");
+                }
+            }catch(Exception ex)
+            {
+                throw;
+            }
 
-        //    return View(responseBody);
-        //}
+            return View();
+        }
     }
 }
